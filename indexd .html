@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>无人自助KTV · 真实好评</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255,255,255,0.96);
+            border-radius: 48px;
+            padding: 40px 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c8a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        .sub {
+            color: #6c7a8e;
+            font-size: 14px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #eef2f6;
+            display: inline-block;
+            padding-bottom: 6px;
+        }
+        .text-content {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #1f2a44;
+            margin: 16px 0 28px;
+            min-height: 320px;
+            background: #f8fafd;
+            padding: 28px 22px;
+            border-radius: 36px;
+            font-weight: 500;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            text-align: left;
+            border: 1px solid #eef2f8;
+        }
+        button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 18px rgba(30,60,114,0.25);
+            transition: all 0.2s;
+        }
+        button:active {
+            transform: scale(0.96);
+            background: #0f2b52;
+        }
+        .counter {
+            color: #7e8a98;
+            font-size: 13px;
+            margin-top: 24px;
+            background: #eff3f8;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+        }
+        .footer-refresh {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #9aa9b9;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>🎤 无人自助KTV</h1>
+    <div class="sub">· 真实用户体验 · 每条都是好评 ·</div>
+    <div class="text-content" id="textDisplay">
+        ✨ 加载中...
+    </div>
+    <button id="randomBtn">🎲 随机换一条</button>
+    <div class="counter" id="counter"></div>
+    <div class="footer-refresh">🔄 刷新页面也会随机切换</div>
+</div>
+
+<script>
+    const textArray = [
+        "第一次来这种无人自助KTV，体验直接超出预期！手机上就能预约、开门，全程不用接触工作人员，对社恐太友好了。包厢收拾得干干净净，没有异味，隔音效果也很棒，放开嗓子唱歌完全不用担心吵到旁人。音响和麦克风质感不错，唱起来不费劲，曲库也特别全，新歌老歌都能找到。还可以自带零食饮料，没有乱七八糟的隐形消费，价格也实惠，以后和朋友聚会就认准这里了。",
+        "加班结束和同事临时约着来放松，没想到深夜也能正常营业，实在太方便了。操作流程特别简单，跟着提示扫码就能进房间，几分钟就搞定。里面灯光氛围很到位，大屏画质清晰，混响效果自然，我们几个唱功一般的人唱着也很好听。房间空间大小适中，坐着很舒服，全程没人打扰，安安静静尽情唱歌解压，性价比真的没话说，已经加入日常放松清单。",
+        "特意一个人过来唱歌散心，这种自助形式真的太自在了。不用尴尬打招呼，想唱多久、唱什么歌全凭自己心情。包厢卫生做得很细致，话筒还配了一次性套，细节很贴心。音响音质在线，高低音表现都不错，点歌系统反应灵敏，不会卡顿。明码标价没有最低消费，价格亲民，一个人沉浸式唱歌，把一天的坏情绪都发泄出去了，体验感满分。",
+        "周末约了几个闺蜜过来小聚，整体体验特别棒。从预约到离场全程自助，流程简单好上手，长辈过来也能轻松操作。包间宽敞不拥挤，装修简约又好看，拍照也很出片。曲库更新速度很快，当下热门的歌曲全都有，我们连着唱了好几个小时都没觉得腻。允许自带奶茶和小吃，省下不少开销，隔音也给力，几个人嬉笑打闹完全不受影响，下次聚会还会再来。",
+        "对比了好几家KTV，最终选了这家无人自助的，果然没选错。没有推销办卡，没有额外收费，消费特别透明。房间通风很好，待久了也不会闷，设备维护得很到位，麦克风收音清晰，音响层次感很强。智能灯光还能跟着歌曲节奏变化，氛围感直接拉满。不管是朋友结伴，还是自己单独来K歌都很合适，价位也很亲民，性价比吊打周边很多传统KTV。"
+    ];
+
+    function showRandomText() {
+        const randomIndex = Math.floor(Math.random() * textArray.length);
+        document.getElementById('textDisplay').innerHTML = textArray[randomIndex];
+        document.getElementById('counter').innerHTML = `📋 共 ${textArray.length} 条好评 · 当前第 ${randomIndex+1}/${textArray.length} 条`;
+    }
+
+    document.getElementById('randomBtn').addEventListener('click', showRandomText);
+    showRandomText();
+</script>
+</body>
+</html>
